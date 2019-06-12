@@ -2,13 +2,7 @@ import requests
 import webbrowser
 import time
 
-from settings import (
-    REFRESH_TIME,
-    REQUEST_PARAMETERS,
-    TAG_LIST,
-    KEY,
-    ACCESS_TOKEN
-)
+from settings import REFRESH_TIME, REQUEST_PARAMETERS, TAG_LIST, KEY, ACCESS_TOKEN
 
 
 reported_questions = set()

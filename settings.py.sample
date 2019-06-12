@@ -1,0 +1,10 @@
+# Authentication
+KEY = '***** PUT YOUR KEY HERE *****'
+ACCESS_TOKEN = '***** PUT YOUR TOKEN HERE *****'
+
+# General Settings
+REFRESH_TIME = 5 * 60
+TAG_LIST = []
+
+# Request Configuration
+REQUEST_PARAMETERS = {}
