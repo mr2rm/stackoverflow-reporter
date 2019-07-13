@@ -1,10 +1,20 @@
 # Authentication
-KEY = '***** PUT YOUR KEY HERE *****'
+KEY = 'U4DMV*8nvpm3EOpvf69Rxw(('
+# Get ACCESS_TOKEN from https://api.stackexchange.com/docs/unanswered-questions-my-tags
 ACCESS_TOKEN = '***** PUT YOUR TOKEN HERE *****'
 
 # General Settings
 REFRESH_TIME = 5 * 60
+# Need for QUESTIONS_API
 TAG_LIST = []
 
 # Request Configuration
-REQUEST_PARAMETERS = {}
+REQUEST_PARAMETERS = {
+    'site': 'stackoverflow',
+    'order': 'desc',
+    'sort': 'creation'
+}
+
+# APIs
+MY_UNANSWERED_API = 'https://api.stackexchange.com/2.2/questions/unanswered/my-tags'
+QUESTIONS_API = 'https://api.stackexchange.com/2.2/questions'

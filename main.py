@@ -2,10 +2,7 @@ import requests
 import webbrowser
 import time
 
-from settings import REFRESH_TIME, REQUEST_PARAMETERS, TAG_LIST, KEY, ACCESS_TOKEN
-
-
-reported_questions = set()
+import settings
 
 
 def question_filter(question):
@@ -13,52 +10,47 @@ def question_filter(question):
 
 
 def get_my_unanswered_questions():
-    url = 'https://api.stackexchange.com/2.2/questions/unanswered/my-tags'
-    parameters = {
-        **REQUEST_PARAMETERS,
-        'key': KEY,
-        'access_token': ACCESS_TOKEN
-    }
+    response = requests.get(url=settings.MY_UNANSWERED_API, params={
+        **settings.REQUEST_PARAMETERS,
+        'key': settings.KEY,
+        'access_token': settings.ACCESS_TOKEN
+    }).json()
 
-    while True:
-        response = requests.get(url=url, params=parameters).json()
-        questions = filter(question_filter, response['items'])
-
-        sorted_questions = sorted(
-            questions, key=lambda q: (-q['score'], q['view_count']))
-        for question in sorted_questions[:5]:
-            reported_questions.add(question['question_id'])
-            webbrowser.open(question['link'])
-
-        time.sleep(REFRESH_TIME)
+    question_list = list(filter(question_filter, response['items']))
+    return question_list
 
 
 def get_questions():
-    url = 'https://api.stackexchange.com/2.2/questions'
-    parameters = {**REQUEST_PARAMETERS}
+    parameters = {**settings.REQUEST_PARAMETERS}
+    question_list = []
 
-    while True:
-        question_list = []
+    for tag in settings.TAG_LIST:
+        parameters.update({'tagged': tag})
+        response = requests.get(
+            url=settings.QUESTIONS_API,
+            params=parameters
+        ).json()
 
-        for tag in TAG_LIST:
-            parameters.update({'tagged': tag})
-            response = requests.get(url=url, params=parameters).json()
+        questions = filter(question_filter, response['items'])
+        selected_questions = map(lambda q: q['question_id'], question_list)
+        questions = filter(
+            lambda q: q['question_id'] not in selected_questions, questions
+        )
+        question_list.extend(questions)
 
-            questions = filter(question_filter, response['items'])
-            selected_questions = map(lambda q: q['question_id'], question_list)
-            questions = filter(
-                lambda q: q['question_id'] not in selected_questions, questions
-            )
-            question_list.extend(questions)
-
-        question_list.sort(key=lambda q: (-q['score'], q['view_count']))
-        for question in question_list[:7]:
-            reported_questions.add(question['question_id'])
-            webbrowser.open(question['link'])
-
-        time.sleep(REFRESH_TIME)
+    return question_list
 
 
 if __name__ == "__main__":
-    # get_questions()
-    get_my_unanswered_questions()
+    reported_questions = set()
+
+    while True:
+        # question_list = get_questions()
+        question_list = get_my_unanswered_questions()
+
+        question_list.sort(key=lambda q: (-q['score'], q['view_count']))
+        for question in question_list[:5]:
+            reported_questions.add(question['question_id'])
+            webbrowser.get('firefox').open(question['link'], autoraise=False)
+
+        time.sleep(settings.REFRESH_TIME)
