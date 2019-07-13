@@ -53,4 +53,7 @@ if __name__ == "__main__":
             reported_questions.add(question['question_id'])
             webbrowser.get('firefox').open(question['link'], autoraise=False)
 
-        time.sleep(settings.REFRESH_TIME)
+        if settings.MODE == 'auto':
+            time.sleep(settings.REFRESH_TIME)
+        else:
+            input("Press Enter to continue...")
