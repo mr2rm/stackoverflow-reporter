@@ -1,7 +1,6 @@
 # Authentication
 KEY = 'U4DMV*8nvpm3EOpvf69Rxw(('
-# Get ACCESS_TOKEN from https://api.stackexchange.com/docs/unanswered-questions-my-tags
-ACCESS_TOKEN = '***** PUT YOUR TOKEN HERE *****'
+ACCESS_TOKEN_API = 'https://stackoverflow.com/oauth/dialog'
 
 # General Settings
 MODE = 'auto'

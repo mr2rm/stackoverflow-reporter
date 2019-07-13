@@ -5,15 +5,25 @@ import time
 import settings
 
 
+reported_questions = set()
+access_token = None
+
+
 def question_filter(question):
     return not question['is_answered'] and question['question_id'] not in reported_questions
+
+
+def get_access_token():
+    redirect_url = 'https%3a%2f%2fapi.stackexchange.com%2fdocs%2foauth_landing'
+    url = f'{settings.ACCESS_TOKEN_API}?client_id=1&key={settings.KEY}&redirect_uri={redirect_url}'
+    webbrowser.get('firefox').open(url)
 
 
 def get_my_unanswered_questions():
     response = requests.get(url=settings.MY_UNANSWERED_API, params={
         **settings.REQUEST_PARAMETERS,
         'key': settings.KEY,
-        'access_token': settings.ACCESS_TOKEN
+        'access_token': access_token
     }).json()
 
     question_list = list(filter(question_filter, response['items']))
@@ -42,7 +52,8 @@ def get_questions():
 
 
 if __name__ == "__main__":
-    reported_questions = set()
+    get_access_token()
+    access_token = input("Enter the access token ('access_token' in URL): ")
 
     while True:
         # question_list = get_questions()
